@@ -3,44 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>巴西美客多订单处理工具2.1</title>
+    <title>巴西美客多订单处理工具2.2</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); padding: 40px; }
-        h1 { color: #2d3748; text-align: center; margin-bottom: 10px; font-size: 28px; }
-        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; font-size: 14px; }
-        .upload-section { background: #f7fafc; border: 2px dashed #cbd5e0; border-radius: 8px; padding: 30px; text-align: center; margin-bottom: 20px; transition: all 0.3s; }
-        .upload-section:hover { border-color: #667eea; background: #edf2f7; }
-        .upload-section.dragover { border-color: #667eea; background: #e6fffa; }
-        #fileInput { display: none; }
-        .upload-btn { background: #667eea; color: white; padding: 12px 30px; border-radius: 6px; cursor: pointer; display: inline-block; font-weight: 500; transition: background 0.3s; }
-        .upload-btn:hover { background: #5a67d8; }
-        .file-info { margin-top: 15px; color: #4a5568; font-size: 14px; }
-        .input-section { margin: 20px 0; padding: 20px; background: #fffaf0; border-left: 4px solid #ed8936; border-radius: 4px; }
-        .input-section label { display: block; color: #2d3748; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
-        .input-section input { width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 14px; transition: border-color 0.3s; }
-        .input-section input:focus { outline: none; border-color: #667eea; }
-        .process-btn { width: 100%; background: #48bb78; color: white; padding: 14px; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; margin: 20px 0; transition: background 0.3s; }
-        .process-btn:hover:not(:disabled) { background: #38a169; }
-        .process-btn:disabled { background: #cbd5e0; cursor: not-allowed; }
-        .log-section { margin-top: 30px; background: #1a202c; border-radius: 8px; padding: 20px; max-height: 400px; overflow-y: auto; }
-        .log-title { color: #e2e8f0; font-size: 14px; font-weight: 600; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .clear-log { background: transparent; color: #a0aec0; border: 1px solid #4a5568; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .clear-log:hover { background: #2d3748; color: #e2e8f0; }
-        .log-content { font-family: "Courier New", monospace; font-size: 12px; line-height: 1.6; color: #a0aec0; }
-        .log-entry { margin: 4px 0; padding: 2px 0; }
-        .log-time { color: #718096; }
-        .log-info { color: #63b3ed; }
-        .log-success { color: #68d391; }
-        .log-error { color: #fc8181; }
-        .download-section { margin-top: 20px; text-align: center; display: none; }
-        .download-btn { background: #4299e1; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: 500; transition: background 0.3s; }
-        .download-btn:hover { background: #3182ce; }
-        .progress-bar { width: 100%; height: 4px; background: #e2e8f0; border-radius: 2px; margin: 20px 0; overflow: hidden; display: none; }
-        .progress-fill { height: 100%; background: #667eea; width: 0%; transition: width 0.3s; }
-        .status-text { text-align: center; color: #4a5568; font-size: 14px; margin: 10px 0; min-height: 20px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .upload-section {
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .upload-section:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+        
+        .upload-section.dragover {
+            border-color: #667eea;
+            background: #e6fffa;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .upload-btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .upload-btn:hover {
+            background: #5a67d8;
+        }
+        
+        .file-info {
+            margin-top: 15px;
+            color: #4a5568;
+            font-size: 14px;
+        }
+        
+        .input-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #fffaf0;
+            border-left: 4px solid #ed8936;
+            border-radius: 4px;
+        }
+        
+        .input-section label {
+            display: block;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .input-section input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-section input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .process-btn {
+            width: 100%;
+            background: #48bb78;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: background 0.3s;
+        }
+        
+        .process-btn:hover:not(:disabled) {
+            background: #38a169;
+        }
+        
+        .process-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        
+        .log-section {
+            margin-top: 30px;
+            background: #1a202c;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .log-title {
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .clear-log {
+            background: transparent;
+            color: #a0aec0;
+            border: 1px solid #4a5568;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .clear-log:hover {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+        
+        .log-content {
+            font-family: "Courier New", monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #a0aec0;
+        }
+        
+        .log-entry {
+            margin: 4px 0;
+            padding: 2px 0;
+        }
+        
+        .log-time {
+            color: #718096;
+        }
+        
+        .log-info {
+            color: #63b3ed;
+        }
+        
+        .log-success {
+            color: #68d391;
+        }
+        
+        .log-error {
+            color: #fc8181;
+        }
+        
+        .download-section {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .download-btn {
+            background: #4299e1;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #3182ce;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin: 20px 0;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .status-text {
+            text-align: center;
+            color: #4a5568;
+            font-size: 14px;
+            margin: 10px 0;
+            min-height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -54,23 +260,24 @@
             <p style="margin-top: 10px; color: #718096; font-size: 13px;">或拖拽文件到此处</p>
             <div class="file-info" id="fileInfo"></div>
         </div>
-
+        
         <div class="input-section">
             <label for="shopUrl">店铺网址（可选）：</label>
             <input type="text" id="shopUrl" placeholder="例如：https://www.mercadolivre.com.br/loja/xxx" />
         </div>
-
+        
         <button class="process-btn" id="processBtn" disabled>开始处理</button>
         
         <div class="progress-bar" id="progressBar">
             <div class="progress-fill" id="progressFill"></div>
         </div>
+        
         <div class="status-text" id="statusText"></div>
-
+        
         <div class="download-section" id="downloadSection">
             <a href="#" class="download-btn" id="downloadLink" download>下载处理后的寻汇模板表格</a>
         </div>
-
+        
         <div class="log-section">
             <div class="log-title">
                 <span>运行日志</span>
@@ -79,43 +286,57 @@
             <div class="log-content" id="logContent"></div>
         </div>
     </div>
-
+    
     <script>
         // 日志系统
         const Logger = {
             logs: [],
+            
             add(message, type = 'info') {
                 const timestamp = new Date().toLocaleTimeString('zh-CN', { hour12: false });
                 const logEntry = { time: timestamp, message, type };
                 this.logs.push(logEntry);
+                
                 const logContent = document.getElementById('logContent');
                 const entryDiv = document.createElement('div');
                 entryDiv.className = 'log-entry';
+                
                 let colorClass = 'log-info';
                 if (type === 'success') colorClass = 'log-success';
                 if (type === 'error') colorClass = 'log-error';
+                
                 entryDiv.innerHTML = `<span class="log-time">[${timestamp}]</span> <span class="${colorClass}">${message}</span>`;
                 logContent.appendChild(entryDiv);
                 logContent.scrollTop = logContent.scrollHeight;
             },
+            
             clear() {
                 this.logs = [];
                 document.getElementById('logContent').innerHTML = '';
             }
         };
-
+        
         // 全局变量
         let uploadedFile = null;
-
+        let workbookData = null;
+        
         // 文件上传处理
         const fileInput = document.getElementById('fileInput');
         const dropZone = document.getElementById('dropZone');
         const fileInfo = document.getElementById('fileInfo');
         const processBtn = document.getElementById('processBtn');
-
+        
         fileInput.addEventListener('change', handleFileSelect);
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
-        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('dragover'); });
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
@@ -125,133 +346,164 @@
                 handleFileSelect({ target: fileInput });
             }
         });
-
+        
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
+            
             if (!file.name.match(/\.(xlsx|xls)$/i)) {
                 Logger.add('错误：请选择Excel文件（.xlsx或.xls）', 'error');
                 return;
             }
+            
             uploadedFile = file;
             fileInfo.textContent = `已选择：${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
             processBtn.disabled = false;
             Logger.add(`文件已加载：${file.name}`, 'success');
         }
-
+        
         // 处理按钮点击
         processBtn.addEventListener('click', async () => {
             if (!uploadedFile) {
                 Logger.add('请先上传A表格文件', 'error');
                 return;
             }
+            
             try {
                 processBtn.disabled = true;
                 document.getElementById('progressBar').style.display = 'block';
                 document.getElementById('downloadSection').style.display = 'none';
+                
                 Logger.add('========== 开始处理 ==========', 'info');
                 updateProgress(0, '读取文件...');
-
+                
                 // 读取Excel文件
                 const arrayBuffer = await uploadedFile.arrayBuffer();
                 const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                
                 Logger.add('文件读取成功', 'success');
                 updateProgress(10, '解析数据...');
-
+                
                 // 获取第一个工作表
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
+                
                 // 转换为JSON数组（保留原始格式）
                 const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+                
                 Logger.add(`原始数据行数：${rawData.length}`, 'info');
-
+                
                 // 执行处理步骤
                 let processedData = await processData(rawData);
-
+                
                 // 生成C表格
                 updateProgress(90, '生成C表格...');
                 const cWorkbook = generateCTable(processedData);
-
+                
                 // 导出文件
                 updateProgress(100, '准备下载...');
                 const wbout = XLSX.write(cWorkbook, { bookType: 'xlsx', type: 'array' });
                 const blob = new Blob([wbout], { type: 'application/octet-stream' });
                 const url = URL.createObjectURL(blob);
+                
                 const downloadLink = document.getElementById('downloadLink');
                 downloadLink.href = url;
                 downloadLink.download = `C表格_处理后_${new Date().getTime()}.xlsx`;
+                
                 document.getElementById('downloadSection').style.display = 'block';
                 Logger.add('处理完成！可以下载C表格了', 'success');
+                
             } catch (error) {
                 Logger.add(`处理出错：${error.message}`, 'error');
                 console.error(error);
             } finally {
                 processBtn.disabled = false;
-                setTimeout(() => { document.getElementById('progressBar').style.display = 'none'; }, 1000);
+                setTimeout(() => {
+                    document.getElementById('progressBar').style.display = 'none';
+                }, 1000);
             }
         });
-
+        
         // 更新进度条
         function updateProgress(percent, status) {
             document.getElementById('progressFill').style.width = percent + '%';
             document.getElementById('statusText').textContent = status;
         }
-
+        
         // 核心处理逻辑
         async function processData(rawData) {
             Logger.add('步骤1：删除前5行...', 'info');
             // 步骤1：删除前5行（索引0-4），第6行（索引5）是表头
             let data = rawData.slice(5);
             Logger.add(`删除后剩余行数：${data.length}`, 'success');
-
+            
             Logger.add('步骤2：列名映射...', 'info');
             // 步骤2：列名已经在代码中硬编码映射，不需要修改表头
-            // A(0)=订单编号, B(1)=订单日期, C(2)=Estado, G(6)=商品数量, S(18)=订单金额
-            // Y(24)=商品名称, AT(45)=物流企业名称, AU(46)=快递单号
-
+            // A(0)=订单编号, B(1)=订单日期, C(2)=Estado, G(6)=商品数量, R(17)=订单金额
+            // X(23)=商品名称, AS(44)=物流企业名称, AT(45)=快递单号
+            
             Logger.add('步骤3：筛选并删除无效行...', 'info');
             // 步骤3：筛选条件
             const filteredData = [];
             let deletedCount = 0;
+            
             for (let i = 1; i < data.length; i++) { // 跳过表头
                 const row = data[i];
-                const unidades = parseFloat(row[6]) || 0;       // G列 (商品数量)
-                const total = parseFloat(row[18]) || 0;         // S列 (订单金额) - 修正索引
-                const trackingNumber = String(row[46] || '').trim(); // AU列 (快递单号) - 修正索引
-                const estado = String(row[2] || '').trim();     // C列 (Estado)
-
+                const unidades = parseFloat(row[6]) || 0; // G列
+                const total = parseFloat(row[18]) || 0;   // R列
+                const trackingNumber = String(row[46] || '').trim(); // AT列
+                const estado = String(row[2] || '').trim(); // C列
+                
                 // 筛选条件
-                if (unidades === 0) { deletedCount++; continue; }
-                if (total === 0) { deletedCount++; continue; }
-                if (trackingNumber === '0' || trackingNumber === '') { deletedCount++; continue; }
-                if (estado !== 'Entregue') { deletedCount++; continue; }
+                if (unidades === 0) {
+                    deletedCount++;
+                    continue;
+                }
+                if (total === 0) {
+                    deletedCount++;
+                    continue;
+                }
+                if (trackingNumber === '0' || trackingNumber === '') {
+                    deletedCount++;
+                    continue;
+                }
+                if (estado !== 'Entregue') {
+                    deletedCount++;
+                    continue;
+                }
                 
                 filteredData.push(row);
             }
+            
             Logger.add(`删除无效行：${deletedCount}行，保留：${filteredData.length}行`, 'success');
             data = [data[0], ...filteredData]; // 重新加上表头
-
+            
             Logger.add('步骤4：处理订单编号（应用B表格函数）...', 'info');
             // 步骤4：应用B表格的函数逻辑
             // 函数：IF(COUNTIF(A$2:A2,A2)>1,A2&"-"&COUNTIF(A$2:A2,A2)-1,A2)
             const orderCounts = {};
             for (let i = 1; i < data.length; i++) {
                 const orderId = String(data[i][0] || '').trim();
-                if (!orderCounts[orderId]) { orderCounts[orderId] = 0; }
+                if (!orderCounts[orderId]) {
+                    orderCounts[orderId] = 0;
+                }
                 orderCounts[orderId]++;
+                
                 if (orderCounts[orderId] > 1) {
                     data[i][0] = `${orderId}-${orderCounts[orderId] - 1}`;
                 }
             }
             Logger.add('订单编号处理完成', 'success');
-
+            
             Logger.add('步骤5：转换订单日期格式...', 'info');
             // 步骤5：葡萄牙语日期转标准格式
+            // 例如："28 de fevereiro de 2026 22:48 hs." -> "2026/02/28"
             const monthMap = {
                 'janeiro': '01', 'fevereiro': '02', 'março': '03', 'abril': '04',
                 'maio': '05', 'junho': '06', 'julho': '07', 'agosto': '08',
                 'setembro': '09', 'outubro': '10', 'novembro': '11', 'dezembro': '12'
             };
+            
             for (let i = 1; i < data.length; i++) {
                 const dateStr = String(data[i][1] || '').trim();
                 if (dateStr) {
@@ -260,12 +512,14 @@
                 }
             }
             Logger.add('日期格式转换完成', 'success');
-
+            
             Logger.add('步骤6-7：准备C表格数据...', 'info');
             // 步骤6-7：构建C表格数据
             const shopUrl = document.getElementById('shopUrl').value.trim();
-            const cData = [];
             
+            const cData = [];
+            // 在第一行插入空白行
+            cData.push(['', '', '', '', '', '', '', '', '', '', '']);
             // C表格表头
             cData.push(['订单编号', '订单日期', '订单币种', '订单金额', '商品名称', '商品数量', '商品单价', '店铺网址', '快递单号', '物流企业名称', '电商平台英文名称']);
             
@@ -273,33 +527,34 @@
                 const row = data[i];
                 const orderId = row[0];
                 const orderDate = row[1];
-                const quantity = parseFloat(row[6]) || 0;      // G列
-                const amount = parseFloat(row[18]) || 0;       // S列 - 修正索引
-                const productName = row[24] || '';             // Y列 - 修正索引
-                const trackingNum = row[46] || '';             // AU列 - 修正索引
-                const carrier = row[45] || '';                 // AT列 - 修正索引
-
+                const quantity = parseFloat(row[6]) || 0; // G列
+                const amount = parseFloat(row[18]) || 0;  // S列
+                const productName = row[24] || '';        // Y列
+                const trackingNum = row[46] || '';        // AU列
+                const carrier = row[45] || '';            // AT列
+                
                 // 计算商品单价
                 const unitPrice = quantity > 0 ? (amount / quantity).toFixed(2) : '0.00';
-
+                
                 cData.push([
-                    orderId,           // A列: 订单编号
-                    orderDate,         // B列: 订单日期
-                    'BRL',             // C列: 订单币种
-                    amount,            // D列: 订单金额
-                    productName,       // E列: 商品名称
-                    quantity,          // F列: 商品数量
-                    parseFloat(unitPrice), // G列: 商品单价
-                    shopUrl,           // H列: 店铺网址
-                    trackingNum,       // I列: 快递单号
-                    carrier,           // J列: 物流企业名称
-                    'Mercado'          // K列: 电商平台英文名称
+                    orderId,           // 订单编号
+                    orderDate,         // 订单日期
+                    'BRL',             // 订单币种
+                    amount,            // 订单金额
+                    productName,       // 商品名称
+                    quantity,          // 商品数量
+                    parseFloat(unitPrice), // 商品单价
+                    shopUrl,           // 店铺网址
+                    trackingNum,       // 快递单号
+                    carrier,           // 物流企业名称
+                    'Mercado'          // 电商平台英文名称
                 ]);
             }
+            
             Logger.add(`C表格数据行数：${cData.length - 1}`, 'success');
             return cData;
         }
-
+        
         // 葡萄牙语日期转换
         function convertPortugueseDate(dateStr, monthMap) {
             try {
@@ -317,11 +572,12 @@
             }
             return dateStr;
         }
-
+        
         // 生成C表格工作簿
         function generateCTable(cData) {
             const wb = XLSX.utils.book_new();
             const ws = XLSX.utils.aoa_to_sheet(cData);
+            
             // 设置列宽
             ws['!cols'] = [
                 { wch: 20 }, // 订单编号
@@ -336,11 +592,19 @@
                 { wch: 20 }, // 物流企业名称
                 { wch: 15 }  // 电商平台英文名称
             ];
+            
             XLSX.utils.book_append_sheet(wb, ws, '订单明细');
             return wb;
         }
-
+        
         // 清空日志
         document.getElementById('clearLog').addEventListener('click', () => {
             Logger.clear();
             Logger.add('日志已清空', 'info');
+        });
+        
+        // 初始化
+        Logger.add('系统已就绪，请上传美客多原始订单文件', 'info');
+    </script>
+</body>
+</html>
