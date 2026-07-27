@@ -279,21 +279,21 @@
                 const trackingNum = row[46] || '';             // AU列 - 修正索引
                 const carrier = row[45] || '';                 // AT列 - 修正索引
 
-                // 计算商品单价 (步骤8)
+                // 计算商品单价
                 const unitPrice = quantity > 0 ? (amount / quantity).toFixed(2) : '0.00';
 
                 cData.push([
-                    orderId,           // A列 订单编号
-                    orderDate,         // B列 订单日期
-                    'BRL',             // C列 订单币种 (步骤6)
-                    amount,            // D列 订单金额
-                    productName,       // E列 商品名称
-                    quantity,          // F列 商品数量
-                    parseFloat(unitPrice), // G列 商品单价 (步骤8)
-                    shopUrl,           // H列 店铺网址 (步骤9)
-                    trackingNum,       // I列 快递单号
-                    carrier,           // J列 物流企业名称
-                    'Mercado'          // K列 电商平台英文名称 (步骤6)
+                    orderId,           // A列: 订单编号
+                    orderDate,         // B列: 订单日期
+                    'BRL',             // C列: 订单币种
+                    amount,            // D列: 订单金额
+                    productName,       // E列: 商品名称
+                    quantity,          // F列: 商品数量
+                    parseFloat(unitPrice), // G列: 商品单价
+                    shopUrl,           // H列: 店铺网址
+                    trackingNum,       // I列: 快递单号
+                    carrier,           // J列: 物流企业名称
+                    'Mercado'          // K列: 电商平台英文名称
                 ]);
             }
             Logger.add(`C表格数据行数：${cData.length - 1}`, 'success');
@@ -309,3 +309,38 @@
                     const day = match[1].padStart(2, '0');
                     const monthName = match[2].toLowerCase();
                     const year = match[3];
+                    const month = monthMap[monthName] || '01';
+                    return `${year}/${month}/${day}`;
+                }
+            } catch (e) {
+                Logger.add(`日期转换失败：${dateStr}`, 'error');
+            }
+            return dateStr;
+        }
+
+        // 生成C表格工作簿
+        function generateCTable(cData) {
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(cData);
+            // 设置列宽
+            ws['!cols'] = [
+                { wch: 20 }, // 订单编号
+                { wch: 15 }, // 订单日期
+                { wch: 12 }, // 订单币种
+                { wch: 15 }, // 订单金额
+                { wch: 40 }, // 商品名称
+                { wch: 12 }, // 商品数量
+                { wch: 12 }, // 商品单价
+                { wch: 35 }, // 店铺网址
+                { wch: 35 }, // 快递单号
+                { wch: 20 }, // 物流企业名称
+                { wch: 15 }  // 电商平台英文名称
+            ];
+            XLSX.utils.book_append_sheet(wb, ws, '订单明细');
+            return wb;
+        }
+
+        // 清空日志
+        document.getElementById('clearLog').addEventListener('click', () => {
+            Logger.clear();
+            Logger.add('日志已清空', 'info');
